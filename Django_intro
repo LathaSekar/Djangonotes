@@ -1,0 +1,227 @@
+Django
+
+Django is a high-level Python web framework used to build **secure, scalable, and fast web applications**.
+
+👉 It follows MVT architecture** (Model–View–Template)
+
+| Component    | Purpose                           |
+| ------------ | --------------------------------- |
+|   Model      | Handles database (data structure) |
+|   View       | Contains business logic           |
+|   Template   | Frontend (HTML UI)                |
+
+📌 Django is used for: Websites, Admin panels, APIs, Dashboards, E-commerce, etc.
+
+⚙️ Django Installation
+
+1️⃣ Install Python (if not already)
+
+Check version:
+
+python --version
+
+
+2️⃣ Install Django using pip
+
+python -m pip install django
+
+Check installation:
+
+django-admin --version
+
+
+ 🚀 Create a Django Project
+
+django-admin startproject myproject
+cd myproject
+python manage.py runserver
+
+Open browser 👉 `http://127.0.0.1:8000/`
+
+You’ll see 🎉 **“The install worked successfully!”**
+
+---
+
+## 🧠 Settings Module (settings.py)
+
+This is the heart of Django project configuration.
+
+📁 Location: `myproject/settings.py`
+
+Important settings:
+
+🔹 1. INSTALLED_APPS
+
+Apps used in project
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+```
+🔹 2. DATABASES
+
+Default uses SQLite
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+```
+
+🔹 3. TEMPLATES
+
+Where HTML files are stored
+
+python
+'DIRS': [BASE_DIR / 'templates'],
+
+
+🔹 4. STATIC FILES (CSS, JS, Images)
+
+python
+STATIC_URL = '/static/'
+
+
+🔹 5. DEBUG
+
+python
+DEBUG = True   # Turn False in production
+
+
+---
+
+🔁 Requests and Responses in Django
+
+Django handles web requests using **views**.
+
+### Step 1: Create an App
+
+python manage.py startapp myapp
+
+Add in `INSTALLED_APPS`:
+
+```python
+'myapp',
+```
+
+### Step 2: Create a View
+
+📁 `myapp/views.py`
+
+```python
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Hello, welcome to Django!")
+```
+
+---
+
+### Step 3: Map URL to View
+
+📁 `myproject/urls.py`
+
+```python
+from django.contrib import admin
+from django.urls import path
+from myapp.views import home
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', home),
+]
+```
+
+Now visit 👉 `http://127.0.0.1:8000/`
+You’ll see: **Hello, welcome to Django!**
+
+📌 Flow:
+
+**Browser → URL → View → Response**
+
+---
+
+## 🖥️ Running Development Server
+
+Start server:
+
+```bash
+python manage.py runserver
+```
+
+Default:
+
+```
+http://127.0.0.1:8000/
+```
+
+Run on different port:
+
+```bash
+python manage.py runserver 8080
+```
+
+Stop server: CTRL + C
+
+---
+
+## 🔐 Django Admin Site Introduction
+
+Django comes with a **built-in admin panel** 😍
+
+### Step 1: Apply Migrations
+
+```bash
+python manage.py migrate
+```
+
+### Step 2: Create Superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+Enter:
+
+* Username
+* Email
+* Password
+
+### Step 3: Login to Admin
+
+Run server and go to:
+
+👉 `http://127.0.0.1:8000/admin`
+
+Login using superuser credentials.
+
+You can now:
+✔ Manage users
+✔ Add/edit database records
+✔ Manage models easily
+
+---
+
+## 🎯 Quick Interview Summary
+
+| Topic        | Key Point                          |
+| ------------ | ---------------------------------- |
+| Django       | Python web framework               |
+| Architecture | MVT (Model–View–Template)          |
+| settings.py  | Project configuration              |
+| View         | Handles request & returns response |
+| runserver    | Starts development server          |
+| Admin        | Built-in database management panel |
+
+---
+
+

@@ -1,0 +1,306 @@
+
+1️⃣ View Layer in Django
+
+The View layer handles:
+👉 Receiving request
+👉 Processing logic
+👉 Returning response
+
+Flow:
+User → URL → View → Response**
+
+Views live in 📁 `views.py`
+
+2️⃣ View Functions (Function-Based Views)
+
+Simplest type of view.
+
+```python
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Welcome to Django!")
+```
+
+With template:
+
+```python
+from django.shortcuts import render
+
+def home(request):
+    return render(request, "home.html")
+
+ 3️⃣ Handling HTTP Requests
+
+A view handles **GET, POST, etc.**
+
+```python
+def contact(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        return HttpResponse(f"Hello {name}")
+    return render(request, "contact.html")
+```
+
+| Method | Use           |
+| ------ | ------------- |
+| GET    | Retrieve data |
+| POST   | Submit form   |
+| PUT    | Update        |
+| DELETE | Delete        |
+
+---
+
+4️⃣ URLConfs (URL Configuration)
+
+Maps URL → View
+
+📁 `urls.py`
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+    path('contact/', views.contact),
+]
+```
+
+With parameter:
+
+```python
+path('student/<int:id>/', views.student_detail)
+```
+
+```python
+def student_detail(request, id):
+    return HttpResponse(f"Student ID: {id}")
+```
+
+---
+
+5️⃣ Shortcuts & Decorators
+
+### 🔹 Shortcuts
+
+| Function            | Purpose                  |
+| ------------------- | ------------------------ |
+| render()            | Return HTML template     |
+| redirect()          | Redirect to another URL  |
+| get_object_or_404() | Fetch object or show 404 |
+
+```python
+from django.shortcuts import get_object_or_404
+student = get_object_or_404(Student, id=1)
+```
+
+---
+
+🔹 Decorators
+
+Add extra functionality to views.
+
+**Login required:**
+
+```python
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard(request):
+    return render(request, "dashboard.html")
+```
+
+HTTP method restriction:
+
+```python
+from django.views.decorators.http import require_POST
+
+@require_POST
+def submit_form(request):
+    ...
+```
+
+---
+
+6️⃣ Request and Response Objects
+
+🔹 Request Object
+
+Contains user data:
+
+```python
+request.method
+request.GET
+request.POST
+request.FILES
+request.user
+request.session
+```
+
+Example:
+
+```python
+name = request.GET.get("name")
+```
+
+---
+
+### 🔹 Response Types
+
+| Response             | Use             |
+| -------------------- | --------------- |
+| HttpResponse         | Basic text/html |
+| JsonResponse         | Return JSON     |
+| HttpResponseRedirect | Redirect        |
+| FileResponse         | Send file       |
+
+```python
+from django.http import JsonResponse
+return JsonResponse({"status": "success"})
+```
+
+---
+
+7️⃣ File Upload in Django
+
+### Step 1: Model
+
+```python
+class Document(models.Model):
+    file = models.FileField(upload_to='uploads/')
+```
+
+### Step 2: Form
+
+```python
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['file']
+```
+
+### Step 3: View
+
+```python
+def upload_file(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("File uploaded!")
+    else:
+        form = DocumentForm()
+    return render(request, 'upload.html', {'form': form})
+```
+
+### Step 4: Template
+
+```html
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+```
+
+### Step 5: settings.py
+
+```python
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+```
+
+---
+
+# 🧱 8️⃣ Class-Based Views (CBVs)
+
+Reusable, organized views.
+
+```python
+from django.views import View
+from django.http import HttpResponse
+
+class HomeView(View):
+    def get(self, request):
+        return HttpResponse("Hello from CBV")
+```
+
+URL:
+
+```python
+path('', HomeView.as_view())
+```
+
+---
+
+### 🔹 Generic CBVs (Most Used)
+
+| View       | Purpose                 |
+| ---------- | ----------------------- |
+| ListView   | Display list of objects |
+| DetailView | Show single object      |
+| CreateView | Add object              |
+| UpdateView | Edit object             |
+| DeleteView | Delete object           |
+
+Example:
+
+```python
+from django.views.generic import ListView
+from .models import Student
+
+class StudentListView(ListView):
+    model = Student
+    template_name = "students.html"
+```
+
+---
+
+9️⃣ Mixins in Django
+
+Mixins add reusable behavior to CBVs.
+
+### 🔹 LoginRequiredMixin
+
+```python
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+
+class StudentListView(LoginRequiredMixin, ListView):
+    model = Student
+```
+
+### 🔹 Other Useful Mixins
+
+| Mixin                   | Purpose                    |
+| ----------------------- | -------------------------- |
+| LoginRequiredMixin      | Only logged-in users       |
+| PermissionRequiredMixin | Specific permission needed |
+| UserPassesTestMixin     | Custom access logic        |
+
+---
+
+# 🎯 Interview Summary Table
+
+| Topic       | Key Point                           |
+| ----------- | ----------------------------------- |
+| View        | Handles request & returns response  |
+| FBV         | Function-based simple views         |
+| CBV         | Class-based reusable views          |
+| URLConf     | URL → View mapping                  |
+| Shortcuts   | render, redirect, get_object_or_404 |
+| Decorators  | Add authentication or rules         |
+| Request     | Contains user input                 |
+| Response    | Data returned to browser            |
+| File Upload | Use request.FILES                   |
+| Mixins      | Add features to CBVs                |
+
+---
+
+Next level topics (very common in interviews):
+👉 **Middleware**
+👉 **Authentication system**
+👉 **Django REST Framework (APIs)**
+
+Say **“REST API”** and we’ll step into API development 🚀

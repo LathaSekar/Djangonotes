@@ -1,0 +1,248 @@
+
+1️⃣ Model Introduction
+
+A Model in Django represents a **database table**.
+
+Each:
+
+* **Class** = Table
+* **Attribute (field)** = Column
+* **Object** = Row
+
+📁 `models.py`
+
+```python
+from django.db import models
+
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    age = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+```
+
+Django automatically creates SQL tables from this model.
+
+---
+
+# 🧩 2️⃣ Field Types & Customization
+
+Django provides many field types.
+
+| Field Type    | Use              |
+| ------------- | ---------------- |
+| CharField     | Short text       |
+| TextField     | Large text       |
+| IntegerField  | Numbers          |
+| FloatField    | Decimal numbers  |
+| BooleanField  | True/False       |
+| DateField     | Date only        |
+| DateTimeField | Date + Time      |
+| EmailField    | Email validation |
+| FileField     | File upload      |
+| ImageField    | Image upload     |
+
+### 🔹 Customizing Fields
+
+```python
+class Employee(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+    email = models.EmailField(unique=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
+    joined_date = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+```
+
+| Option        | Meaning                 |
+| ------------- | ----------------------- |
+| `null=True`   | Allows NULL in DB       |
+| `blank=True`  | Field optional in forms |
+| `default`     | Default value           |
+| `unique=True` | No duplicates allowed   |
+| `choices=`    | Dropdown values         |
+
+Example with choices:
+
+```python
+STATUS_CHOICES = [
+    ('A', 'Active'),
+    ('I', 'Inactive'),
+]
+
+status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+```
+
+---
+
+ 🔍 3️⃣ Queries (ORM – Object Relational Mapping)
+
+Django uses **ORM** instead of writing SQL.
+
+### 🔹 Create
+
+```python
+Student.objects.create(name="Ravi", email="ravi@mail.com", age=22)
+```
+
+### 🔹 Retrieve
+
+```python
+Student.objects.all()
+Student.objects.get(id=1)
+Student.objects.filter(age=22)
+Student.objects.exclude(age=22)
+```
+
+### 🔹 Update
+
+```python
+student = Student.objects.get(id=1)
+student.age = 23
+student.save()
+```
+
+### 🔹 Delete
+
+```python
+student = Student.objects.get(id=1)
+student.delete()
+```
+
+### 🔹 Useful Query Filters
+
+```python
+Student.objects.filter(name__icontains="ra")
+Student.objects.filter(age__gt=20)
+Student.objects.order_by('-age')
+Student.objects.count()
+```
+
+---
+
+🔗 4️⃣ Accessing Related Objects (Relationships)
+
+### 🔹 ForeignKey (Many-to-One)
+
+```python
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+
+class Employee(models.Model):
+    name = models.CharField(max_length=100)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+```
+
+Accessing relations:
+
+```python
+emp = Employee.objects.get(id=1)
+print(emp.department.name)   # Forward relation
+
+dept = Department.objects.get(id=1)
+dept.employee_set.all()      # Reverse relation
+```
+
+---
+
+### 🔹 ManyToMany
+
+```python
+class Project(models.Model):
+    name = models.CharField(max_length=100)
+
+class Developer(models.Model):
+    name = models.CharField(max_length=100)
+    projects = models.ManyToManyField(Project)
+```
+
+```python
+dev = Developer.objects.get(id=1)
+dev.projects.all()
+```
+
+---
+
+### 🔹 OneToOne
+
+```python
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+```
+
+---
+
+# 🔄 5️⃣ Django Migrations
+
+Migrations track model changes and update DB.
+
+### Commands:
+
+```bash
+python manage.py makemigrations   # Create migration file
+python manage.py migrate          # Apply to database
+```
+
+See SQL:
+
+```bash
+python manage.py sqlmigrate appname 0001
+```
+
+Migration files are stored in:
+📁 `app_name/migrations/`
+
+---
+
+# 💾 6️⃣ Database Transactions
+
+Transactions ensure **data consistency** (All or Nothing).
+
+### 🔹 Using `atomic()`
+
+```python
+from django.db import transaction
+
+def transfer_money(sender, receiver, amount):
+    with transaction.atomic():
+        sender.balance -= amount
+        sender.save()
+
+        receiver.balance += amount
+        receiver.save()
+```
+
+If any error occurs → **both operations rollback**.
+
+---
+
+### 🔹 Manual Rollback
+
+```python
+from django.db import transaction
+
+@transaction.atomic
+def create_order():
+    order = Order.objects.create(...)
+    if payment_failed:
+        raise Exception("Payment failed")  # Rolls back
+```
+
+---
+
+# 🎯 Interview Quick Recap
+
+| Topic         | Key Point                     |
+| ------------- | ----------------------------- |
+| Model         | Python class → DB table       |
+| Field Types   | Define data type & validation |
+| ORM Queries   | CRUD without SQL              |
+| Relationships | FK, M2M, OneToOne             |
+| Migrations    | Sync models with DB           |
+| Transactions  | Prevent partial data save     |
+
+
+
