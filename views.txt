@@ -7,9 +7,9 @@ The View layer handles:
 👉 Returning response
 
 Flow:
-User → URL → View → Response**
+User → URL → View → Response
 
-Views live in 📁 `views.py`
+Views live in `views.py`
 
 2️⃣ View Functions (Function-Based Views)
 
@@ -25,16 +25,20 @@ def home(request):
 With template:
 
 ```python
-from django.shortcuts import render
-
+# render is a shortcut function template+data and return an http response to the browser
+from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404
 def home(request):
-    return render(request, "home.html")
+    return render(request, "home.html",context)
+    return redirect("/login/")
+    post=get_object_or_404(Post,id=1)
 
  3️⃣ Handling HTTP Requests
 
 A view handles **GET, POST, etc.**
 
 ```python
+
 def contact(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -101,8 +105,13 @@ student = get_object_or_404(Student, id=1)
 
 Add extra functionality to views.
 
-**Login required:**
-
+Login required
+Permission required
+user_passes_test
+require_GET
+require_POST
+csrf_exempt  Cross site Request Forgery
+csrf_protect
 ```python
 from django.contrib.auth.decorators import login_required
 
@@ -298,9 +307,3 @@ class StudentListView(LoginRequiredMixin, ListView):
 
 ---
 
-Next level topics (very common in interviews):
-👉 **Middleware**
-👉 **Authentication system**
-👉 **Django REST Framework (APIs)**
-
-Say **“REST API”** and we’ll step into API development 🚀

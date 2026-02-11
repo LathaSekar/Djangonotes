@@ -2,7 +2,8 @@ TEMPLATE LAYER
 
 Templates control **how data is displayed**.
 
-📁 `templates/home.html`
+render variables by putting them inside
+ {{   }} brackets
 
 ```html
 <h1>{{ title }}</h1>
@@ -34,8 +35,63 @@ Built-in Tags
 
 {% block content %}{% endblock %}
 {% extends "base.html" %}
+if
+else
 
+if
+elif
+else
 
+if
+BUILT-IN TAGS
+Tag	Use
+{% if %}	Conditions
+Inbuilt functions in user model:
+user.is_authenticated   user logged in or not
+user.is_staff            staff user
+user.is_superuser        Admin user
+user.username            username
+user.email               email
+
+{% if user.is_authenticated %}
+   <p> welcome,{{user.username}}!=</p>
+{% else %}
+   <p> Please log in </p>
+<% end if%>
+
+{% if user.profile_completed %}
+    <p>Profile Complete </p>
+{% else %}
+    <p>Please complete your profile </p>
+{% endif %}
+
+{% if marks >= 75 %}
+    <p>Distinction</p>
+
+{% elif marks >= 40 %}
+    <p>Pass</p>
+
+{% else %}
+    <p>Fail</p>
+{% endif %}
+
+{% if order.payment_status == "PAID" %}
+    <p>Payment Successful</p>
+
+{% elif order.payment_status == "PENDING" %}
+    <p>Awaiting Payment</p>
+
+{% else %}
+    <p>Payment Failed</p>
+
+{% endif %}
+
+{% for %}	Loop
+{% block %}	Template inheritance
+{% extends %}	Extend base template
+{% include %}	Include another template
+{% url %}	Create dynamic URLs
+{% csrf_token %}	Security token in forms
 🎛️ Built-in Filters
 
 ```html

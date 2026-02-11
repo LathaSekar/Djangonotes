@@ -5,9 +5,9 @@ A Model in Django represents a **database table**.
 
 Each:
 
-* **Class** = Table
-* **Attribute (field)** = Column
-* **Object** = Row
+Class = Table
+Attribute (field) = Column
+Object = Row
 
 📁 `models.py`
 
@@ -18,7 +18,8 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     age = models.IntegerField()
-
+    message=models.TextField()
+    balance=models.FloatField()
     def __str__(self):
         return self.name
 ```
@@ -48,11 +49,14 @@ Django provides many field types.
 
 ```python
 class Employee(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=False)
+    name = models.CharField(max_length=100, null=False, blank=False,Primary_key=True)
+    primary key: it is a field that uniquely identifies each record in a table
     email = models.EmailField(unique=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2)
     joined_date = models.DateField(auto_now_add=True)
+    It records the creation timestamp and never changes again
     updated_at = models.DateTimeField(auto_now=True)
+    Every time record is saved the last modified date will update
     is_active = models.BooleanField(default=True)
 ```
 
@@ -79,7 +83,7 @@ status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
  🔍 3️⃣ Queries (ORM – Object Relational Mapping)
 
-Django uses **ORM** instead of writing SQL.
+Django uses ORM instead of writing SQL.
 
 ### 🔹 Create
 
@@ -90,11 +94,20 @@ Student.objects.create(name="Ravi", email="ravi@mail.com", age=22)
 ### 🔹 Retrieve
 
 ```python
-Student.objects.all()
-Student.objects.get(id=1)
-Student.objects.filter(age=22)
-Student.objects.exclude(age=22)
-```
+Student.objects.all() return all records
+Student.objects.get(id=1) get specific records
+Student.objects.filter(age=22) filtering selected record  #single condition
+Student.objects.filter(Place="Tirupur",age__lt=17)
+Student.objects.exclude(age=22) omitting the specific fields
+comparison operators:
+Greater than       age__gt=22
+less than          age__lt=40
+Greater than or equal age__gte=35
+Less than or equal age__lte=20
+
+
+
+
 
 ### 🔹 Update
 
@@ -103,6 +116,8 @@ student = Student.objects.get(id=1)
 student.age = 23
 student.save()
 ```
+Student.objects.filter(id=1).update(age=23)
+
 
 ### 🔹 Delete
 
@@ -116,7 +131,8 @@ student.delete()
 ```python
 Student.objects.filter(name__icontains="ra")
 Student.objects.filter(age__gt=20)
-Student.objects.order_by('-age')
+Student.objects.order_by('-age')#descending order
+Student.objects.order_by('age')#ascending order
 Student.objects.count()
 ```
 
@@ -136,13 +152,23 @@ class Employee(models.Model):
 ```
 
 Accessing relations:
+primary key:
+that uniquely identifies each record in the table
+No duplicates
+cannot be NULL
 
+Foriegn key:
+Field in one table that links to the primary key of another table
+
+One to one     one record ->one record
+many to one    many records -> one record
+many to many   many records-> many records
 ```python
 emp = Employee.objects.get(id=1)
-print(emp.department.name)   # Forward relation
+print(emp.department.name)   # Forward relation (child to parent)
 
 dept = Department.objects.get(id=1)
-dept.employee_set.all()      # Reverse relation
+dept.employee_set.all()      # Reverse relation (parent-child)
 ```
 
 ---
@@ -170,6 +196,7 @@ dev.projects.all()
 ```python
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #if profile got deleted user should also got deleted
     bio = models.TextField()
 ```
 
@@ -197,11 +224,16 @@ Migration files are stored in:
 
 ---
 
-# 💾 6️⃣ Database Transactions
+# 6️⃣ Database Transactions
 
-Transactions ensure **data consistency** (All or Nothing).
-
+A transaction is a group of database operations that run as one unit
+Transactions ensure data safety & consistency (All or Nothing).
+either all succeed
+all fail(rollback)
 ### 🔹 Using `atomic()`
+@transaction.atomic
+  It ensures all DB operations inside it succeed together
+  If any error happens.both updates are rolled back
 
 ```python
 from django.db import transaction

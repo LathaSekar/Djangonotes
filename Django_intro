@@ -32,8 +32,8 @@ django-admin --version
 
  🚀 Create a Django Project
 
-django-admin startproject myproject
-cd myproject
+django-admin startproject myproject(projectname)
+cd myproject(projectname)
 python manage.py runserver
 
 Open browser 👉 `http://127.0.0.1:8000/`
@@ -105,7 +105,7 @@ Django handles web requests using **views**.
 
 ### Step 1: Create an App
 
-python manage.py startapp myapp
+python manage.py startapp myapp(appname)
 
 Add in `INSTALLED_APPS`:
 
