@@ -21,6 +21,10 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse("Welcome to Django!")
 ```
+| Option       | Used For | Meaning                     |
+| ------------ | -------- | --------------------------- |
+| `null=True`  | Database | Column can store NULL       |
+| `blank=True` | Forms    | Field can be empty in forms |
 
 With template:
 
@@ -133,6 +137,7 @@ def submit_form(request):
 ---
 
 6️⃣ Request and Response Objects
+browser ->sends request->django processes->send response->browser shows result
 
 🔹 Request Object
 
@@ -140,11 +145,45 @@ Contains user data:
 
 ```python
 request.method
+Tells which http,method was used
+def my_view(request):
+   if request.method=="GET"
+      return HttpResponse("This is GET Request")
 request.GET
+
+def search(request):
+URL query parameters
+   query=request.GET.get("class1")
+   return HttpResponse(f"You searched for{query}")"
 request.POST
+contains form data sent using POST
+def submit_form(request):
+  if request.method=="POST":
+     name=reqest.POST.get("name")
+     return Httpresponase(f"Hello {name}")"
+      n
 request.FILES
+used for file uploads
+def upload(request):
+   if request.method =="POST":
+      file=request.FILES['myfile']
 request.user
+Represents the currently logged in user
+def dashboard(request):
+  if request.user.is_authenticated:
+      return Httpresponse(f"welcome{request.user.username}")
 request.session
+session stores the data on server side for a specific user across multiple requets
+def set_session(request):
+   request.session['username']='student1'
+   return HttpResponse("session data")
+
+request.session.get()    get value safely
+request.session.flush()   delete session completely
+request.session.clear()    removes all session data
+request.session.set_expiry(300)   5 mins
+
+
 ```
 
 Example:
@@ -164,10 +203,23 @@ name = request.GET.get("name")
 | HttpResponseRedirect | Redirect        |
 | FileResponse         | Send file       |
 
-```python
+from django.http import Httpesponse
+def hello(request):
+   return HttpResponse("Hello user")
+
 from django.http import JsonResponse
-return JsonResponse({"status": "success"})
-```
+def user_data(request):
+    data={"status": "success",
+           "user":"Admin"}
+  return JsonResponse(data)
+
+from django.http import HttpResponseRedirect
+def old_page(request):
+  return HttpResponseRedirect("/new-page/")
+
+from django.http import FileResponse
+def download_file(request):
+   return FileResponse(open("report.pdf","rb"))
 
 ---
 
@@ -183,6 +235,8 @@ class Document(models.Model):
 ### Step 2: Form
 
 ```python
+from django import forms
+from .models import document
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
@@ -223,7 +277,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 ---
 
 # 🧱 8️⃣ Class-Based Views (CBVs)
-
+It is a way to create views using python classes instead of functions
 Reusable, organized views.
 
 ```python
@@ -252,6 +306,20 @@ path('', HomeView.as_view())
 | CreateView | Add object              |
 | UpdateView | Edit object             |
 | DeleteView | Delete object           |
+from django.views.generic import ListView
+Class BookListView(ListView):
+   model=Book
+   template_name="book_list.html"
+   context_object_name=' books'
+
+from django.views.generic import DetailView
+class BookDetailView(DetailView):
+     model=Book
+     template_name='book_detail.html"
+from django.views.generic import CreateView
+
+from django.views.generic import UpdateView
+from django.views.generic import DeleteView
 
 Example:
 
