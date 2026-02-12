@@ -42,7 +42,21 @@ if
 elif
 else
 
-if
+Built in variables:
+| Variable   | What it gives you         |
+| ---------- | ------------------------- |
+| `user`     | Logged-in user object     |
+| `request`  | Current HTTP request      |
+| `perms`    | User permissions          |
+| `messages` | Django messages framework |
+
+<p> Current path:{{request.path}}</p>
+{% if perms.auth.add_user %}
+ <P> You can add a new user </P>
+{% end if %}
+{ % for  message in messages %}
+<p> {{message}}</p>
+{% end for %}
 BUILT-IN TAGS
 Tag	Use
 {% if %}	Conditions
@@ -92,7 +106,66 @@ user.email               email
 {% include %}	Include another template
 {% url %}	Create dynamic URLs
 {% csrf_token %}	Security token in forms
+| Tag                | Purpose                    | Example                          |
+| ------------------ | -------------------------- | -------------------------------- |
+| `{% if %}`         | Condition                  | `{% if user.is_authenticated %}` |
+| `{% for %}`        | Loop                       | `{% for item in items %}`        |
+| `{% empty %}`      | If loop empty              | Inside for loop                  |
+| `{% block %}`      | Template inheritance block | Base template                    |
+| `{% extends %}`    | Extend template            | Child template                   |
+| `{% include %}`    | Include template           | Navbar include                   |
+| `{% url %}`        | Generate URL               | `{% url 'home' %}`               |
+| `{% csrf_token %}` | CSRF protection            | Inside POST form                 |
+| `{% with %}`       | Store variable temporarily | `{% with total=cart.count %}`    |
+| `{% comment %}`    | Template comment           | Hidden note                      |
+
 🎛️ Built-in Filters
+| Filter          | Example  | Result               |              |
+| --------------- | -------- | -------------------- | ------------ |
+| `upper`         | `{{ name | upper }}`            | CHERMA       |
+| `lower`         | `{{ name | lower }}`            | cherma       |
+| `title`         | `{{ name | title }}`            | Cherma Latha |
+| `truncatechars` | `{{ text | truncatechars:10 }}` | Short text…  |
+name="Student"
+{{ name | upper }}
+{{ name | lower }}
+{{ name | title }}
+text="Django is powerful web development framework"
+{{ text | truncatechars:10 }}
+Django is ...
+
+Number Filters:
+| Filter        | Example   | Result            |       |
+| ------------- | --------- | ----------------- | ----- |
+| `add`         | `{{ 5     | add:3 }}`         | 8     |
+| `floatformat` | `{{ price | floatformat:2 }}` | 99.00 |
+{{ 5     | add:3 }}
+Date and time  Filters:
+
+| Filter      | Example          |                  |
+| ----------- | ---------------- | ---------------- |
+| `date`      | `{{ today        | date:"d-m-Y" }}` |
+| `time`      | `{{ now          | time:"H:i" }}`   |
+| `timesince` | `{{ post.created | timesince }}`    |
+| `timeuntil` | `{{ event.date   | timeuntil }}`    |
+{{ today        | date:"d-m-Y" }}
+
+List Filters:
+| Filter   | Example   | Result        |            |
+| -------- | --------- | ------------- | ---------- |
+| `length` | `{{ items | length }}`    | Count      |
+| `first`  | `{{ items | first }}`     | First item |
+| `last`   | `{{ items | last }}`      | Last item  |
+| `join`   | `{{ items | join:", " }}` | a, b, c    |
+Utility Filters:
+| Filter       | Use                          |
+| ------------ | ---------------------------- |
+| `default`    | Fallback value               |
+| `yesno`      | True/False to Yes/No         |
+| `safe`       | Render HTML                  |
+| `escape`     | Escape HTML                  |
+| `linebreaks` | Convert line breaks to `<p>` |
+Humanise Filters:
 
 ```html
 {{ name|upper }}
@@ -133,13 +206,35 @@ register = template.Library()
 def multiply(value, arg):
     return value * arg
 ```
+@register.filter
+def reverse_string(value):
+   return value[::-1]
 
 Use in template:
 
 ```html
 {% load custom_tags %}
 {{ 5|multiply:3 }}
+{{"Django"|reverse_string}}
+ognajd
 ```
+@register.simple_tag
+def current_year():
+  from datetime import datetime
+  return datetime.now().year
+
+{%load custom_filters%}
+<header>
+{% current_year%}
+</header>
+2026`
+
+<form method="POST">
+ {% csrf_token %}
+ <input type="text" name="username">
+ <button type ="submit"> submit </button>
+</form>
+
 
 --- 📝 FORMS IN DJANGO
 
@@ -152,7 +247,7 @@ from django import forms
 
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=100)
-    email = forms.EmailField()
+    email = forms.EmailField()`
 ```
 
 ### 🔹 ModelForm
