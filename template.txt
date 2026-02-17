@@ -3,7 +3,7 @@ TEMPLATE LAYER
 Templates control **how data is displayed**.
 
 render variables by putting them inside
- {{   }} brackets
+ {{   }} brackets <label>{{username}}</label>
 
 ```html
 <h1>{{ title }}</h1>
@@ -67,9 +67,9 @@ user.is_superuser        Admin user
 user.username            username
 user.email               email
 
-{% if user.is_authenticated %}
-   <p> welcome,{{user.username}}!=</p>
-{% else %}
+{% if user.is_authenticated %} {%if marks <=75 %}
+   <p> welcome,{{user.username}}!=</p><p>distinction</p>
+{% else %}   {%elif 
    <p> Please log in </p>
 <% end if%>
 
@@ -438,6 +438,7 @@ Django automatically verifies the token on form submission.
 - **Humanization** filters improve readability.
 - You can create **custom tags/filters** to extend functionality.
 - Always include **CSRF tokens** in forms for security.
+
 
 
 
