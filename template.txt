@@ -3,7 +3,7 @@ TEMPLATE LAYER
 Templates control **how data is displayed**.
 
 render variables by putting them inside
- {{   }} brackets <label>{{username}}</label>
+ {{   }} brackets
 
 ```html
 <h1>{{ title }}</h1>
@@ -67,9 +67,9 @@ user.is_superuser        Admin user
 user.username            username
 user.email               email
 
-{% if user.is_authenticated %} {%if marks <=75 %}
-   <p> welcome,{{user.username}}!=</p><p>distinction</p>
-{% else %}   {%elif 
+{% if user.is_authenticated %}
+   <p> welcome,{{user.username}}!=</p>
+{% else %}
    <p> Please log in </p>
 <% end if%>
 
@@ -157,6 +157,8 @@ List Filters:
 | `first`  | `{{ items | first }}`     | First item |
 | `last`   | `{{ items | last }}`      | Last item  |
 | `join`   | `{{ items | join:", " }}` | a, b, c    |
+name="Django"
+{{ name | length}}
 Utility Filters:
 | Filter       | Use                          |
 | ------------ | ---------------------------- |
@@ -165,6 +167,10 @@ Utility Filters:
 | `safe`       | Render HTML                  |
 | `escape`     | Escape HTML                  |
 | `linebreaks` | Convert line breaks to `<p>` |
+{{ name |default :"guest"}}
+{{user _input |escape}}
+{{ html_content |safe}}
+<script> alert('hack')</script>
 Humanise Filters:
 
 ```html
@@ -430,15 +436,14 @@ In your form, include:
 Django automatically verifies the token on form submission.
 
 
-## Summary
-- The **template layer** separates presentation from logic.
+Summary
+- The template layer separates presentation from logic.
 - **Forms** handle user input securely.
-- Django's **template language** includes variables, control tags, filters, and inheritance.
-- Use **built-in tags and filters** to simplify rendering.
+- Django's template language includes variables, control tags, filters, and inheritance.
+- Use built-in tags and filters to simplify rendering.
 - **Humanization** filters improve readability.
-- You can create **custom tags/filters** to extend functionality.
+- You can create custom tags/filters to extend functionality.
 - Always include **CSRF tokens** in forms for security.
-
 
 
 

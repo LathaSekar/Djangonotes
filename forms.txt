@@ -1,0 +1,66 @@
+Forms API:
+Django forms handles API handles
+creating HTML forms
+Validating user input
+rendering form fields automatically
+from django import forms
+class ContactForm(forms.Form):
+    name=forms.CharField()                        email = models.EmailField(unique=True)
+    email  =forms.EmailField()
+class LoginForm(forms.form)
+    username=forms.CharField(max_length=100,label="username",placeholder="enter your username")
+    password=forms.CharField(max_length=100,label="Password",Placeholder="Enter your password")
+    forms.form        forms.ModelForm
+    Not linked to DB  Linked to model
+    Built in fields:
+    CharField
+    EmailField
+    IntegerField
+    DateField
+    BooleanField
+    ChoiceField
+
+    Built in widgets:
+    TextInput       name,city
+    PasswordInput   password
+    Textarea        comments
+    CheckboxInput   Agreeterms
+    Select          Country,currency
+    radioSelect     Gender,Degree,Branch
+
+    password=forms.CharField(widget=forms.PasswordInput)
+    GENDER_CHOICES=[('M','MAle'),('F','female')]
+    gender=forms.choiceField(choices=GENDER_CHOICES,widget=forms.Select())
+    ModelForm
+       It is a Django form that is automatically created from a database model
+       Django reads the model and generates
+       Form Fields
+       Validation Rules
+       labels
+       Widgets
+       from django.forms import modelform
+
+      FormSets:
+      Form sets allows multiple forms on one page
+      from django.forms import formset_factory    (used for normal forms)
+      StudentFormset=formset_factory(StudentForm,extra=3)
+      from django.forms import modelformset_factory (linked to model saves to database)
+
+    Internationalization:
+    making app ready for multiple languages
+    settings.py
+    USE_I18N=True
+    language_code="en"
+    languages=[("en",'english",'ta','tamil',]
+
+
+
+
+
+
+
+
+
+
+
+
